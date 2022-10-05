@@ -1,0 +1,28 @@
+[{
+  "essential": true,
+  "image": "jzemerick/ner-serving:latest",
+  "memory": 4096,
+  "memoryReservation": 4096,
+  "name": "${name}",
+  "portMappings": [{
+    "containerPort": 8080,
+    "hostPort": 0
+  }],
+  "logConfiguration": {
+    "logDriver": "awslogs",
+    "options": {
+      "awslogs-group": "${log_group}",
+      "awslogs-region": "us-east-1",
+      "awslogs-stream-prefix": "my-model/final-model.pt"
+    }
+  },
+  "environment": [{
+      "name": "MODEL_BUCKET",
+      "value": "${bucket}"
+    },
+    {
+      "name": "MODEL_KEY",
+      "value": "${key}"
+    }
+  ]
+}]
