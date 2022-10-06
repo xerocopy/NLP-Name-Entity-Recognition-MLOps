@@ -7,7 +7,7 @@ This project facilitates the automated training and serving of NLP named-entity 
 
 ### Key Technologies:
 
-Infrastructure/ Model Training: Amazon EventBridge Rule, Amazon ECS Cluster, Amazon SQS, Amazon DynamoDB, AWS Lambda, Amazon S3, Amazon VPC
+Infrastructure/ Model Training: Amazon EventBridge Rule (Cloud Watch), Amazon ECS Cluster, Amazon SQS, Amazon DynamoDB, AWS Lambda, Amazon S3, Amazon VPC
 
 Model Serving: Amazon ECS Service, Task, Application Load Balancer(ALB)
 
@@ -77,7 +77,6 @@ The block size you specify should be less than the available memory on the insta
 
         - docker system prune 
 
-
     to figure out what is taking up the space run
 
         - docker system df
@@ -86,6 +85,11 @@ The block size you specify should be less than the available memory on the insta
     
         - docker <image/builder/container> prune --all 
     
+-Check the local EBS volume space if requires more space
+        
+        - df -h
+        
+        - bash resize.sh 30
 
 
 Now you can build and push the NLP NER training container:
@@ -104,11 +108,23 @@ cd serving
 docker push $DOCKERHUB_USERNAME/ner-serving:latest
 ```
 
+
 ### Building the Lambda Function
+
+Before install lambda function install apache maven on local system
+
+    - sudo wget http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo
+
+    - sudo sed -i s/\$releasever/6/g /etc/yum.repos.d/epel-apache-maven.repo
+
+    - sudo yum install -y apache-maven
+
+    - mvn –version
+
 
 The Lambda function is implemented in Java. The Lambda function controls the creation of ECS tasks.
 
-To build the Lambda function, run `build.sh` or the command:
+To build the Lambda function, run `build-lamdba.sh` or the command:
 
 ```
 mvn clean package -f ./lambda-handler/pom.xml -DskipTests=true
@@ -192,3 +208,7 @@ This project is licensed under the Apache License, version 2.0.
 7. [increase memory on Amazon Linux Machine](https://aws.amazon.com/premiumsupport/knowledge-center/ec2-memory-swap-file/)
 
 8. [add and edit a swap file](https://www.youtube.com/watch?v=tGrzyFdUPFk)
+
+9. [Create Lambda Functions to invoke Endpoint](https://www.youtube.com/watch?v=mCpedQixwUg) 
+
+10. [Installing Maven file](https://softchief.com/2017/11/07/installing-maven-using-yum-on-ec2-instance-amazon-linux/)
