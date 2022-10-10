@@ -14,11 +14,12 @@ LABEL python="3.8"
 RUN yum upgrade -y \
 	&& yum install -y python38 \
 	&& yum install -y python38-devel
+	
+RUN python3.8 -m pip install 'protobuf<=3.20.1' --force-reinstall  # to fix error 'TypeError: Descriptors cannot not be created directly.''
 
 # Note: These RUN lines could be combined into a single RUN command to reduce layers
 RUN python3.8 -m pip install --upgrade pip
 RUN python3.8 -m pip install --upgrade setuptools wheel
-#RUN python3.8 -m pip --no-cache-dir install torchvision   # this line tries to fix the memoryerror during torch installation, didnt work in Amazon Linux. now try to increase the env mem
 RUN python3.8 -m pip install flair==${FLAIR_VERSION}
 RUN python3.8 -m pip install awscli boto3
 RUN python3.8 -m pip freeze
